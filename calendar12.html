@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Availability Calendar</title>
+<style>
+body { font-family: Arial; margin: 0; background: #f5f5f5; }
+header { background: #333; color: #fff; padding: 20px; text-align: center; }
+nav { background: #444; padding: 10px; text-align: center; }
+nav a { color: #fff; margin: 0 15px; text-decoration: none; font-size: 18px; }
+.container { width: 95%; max-width: 1100px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; }
+
+.month { margin-bottom: 40px; }
+.month h2 { text-align: center; margin-bottom: 10px; }
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day {
+    padding: 10px;
+    background: #eaeaea;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.booked { background: #d9534f; color: #fff; }
+.available { background: #5cb85c; color: #fff; }
+
+.weekday-label {
+    font-weight: bold;
+    background: #ddd;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Availability Calendar</h1>
+</header>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="calendar.html">Availability</a>
+<a href="gallery.html">Gallery</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+<div class="container">
+<h2>Select Dates</h2>
+<p>Click any date to mark it as booked or available.</p>
+
+<div id="calendarContainer"></div>
+</div>
+
+<script>
+const calendarContainer = document.getElementById("calendarContainer");
+
+const months = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+];
+
+function generateCalendar(year) {
+    months.forEach((monthName, monthIndex) => {
+        const monthDiv = document.createElement("div");
+        monthDiv.classList.add("month");
+
+        const title = document.createElement("h2");
+        title.textContent = `${monthName} ${year}`;
+        monthDiv.appendChild(title);
+
+        const calendarGrid = document.createElement("div");
+        calendarGrid.classList.add("calendar");
+
+        // Weekday labels
+        const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+        weekdays.forEach(day => {
+            const label = document.createElement("div");
+            label.classList.add("weekday-label");
+            label.textContent = day;
+            calendarGrid.appendChild(label);
+        });
+
+        // First day of the month
+        const firstDay = new Date(year, monthIndex, 1).getDay();
+        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+        // Empty slots before first day
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            calendarGrid.appendChild(empty);
+        }
+
+        // Actual days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDiv = document.createElement("div");
+            dayDiv.classList.add("day", "available");
+            dayDiv.textContent = day;
+
+            dayDiv.addEventListener("click", () => {
+                dayDiv.classList.toggle("booked");
+                dayDiv.classList.toggle("available");
+            });
+
+            calendarGrid.appendChild(dayDiv);
+        }
+
+        monthDiv.appendChild(calendarGrid);
+        calendarContainer.appendChild(monthDiv);
+    });
+}
+
+generateCalendar(new Date().getFullYear());
+</script>
+
+</body>
+</html>
